@@ -1,0 +1,21 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Вход</title>
+        <link rel="stylesheet" href="{% static 'wishes/styles/style.css'%}" />
+    </head>
+<body>
+    <div class="container">
+        <h1>Вход</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Войти</button>
+        </form>
+        <p>Нет аккаунта?<a href="{% url 'register' %}">Зарегистрироваться</a></p>
+    </div>
+</body>
+</html>
