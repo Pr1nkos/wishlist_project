@@ -1,0 +1,55 @@
+﻿{% load static tz %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Мои желания</title>
+    <link rel="stylesheet" href="{% static 'wishes/styles/style.css'%}" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Список желаний {% if user.is_authenticated %}({{ user.username}}) {% endif %}</h1>
+      {% if user.is_authenticated %}
+      <form method="post" action="{% url 'logout' %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="logout-btn">Выйти</button>
+      </form>
+      {% endif %}
+      <form method="post" action="{% url 'wishlist' %}">
+        {% csrf_token %}
+        <input type="text" name="wish_text" placeholder="Введите желание" />
+        <button type="submit">Добавить</button>
+      </form>
+      <ul>
+        {% for wish in wishes %}
+        <li>
+          {% if editing_wish == wish.id %}
+            <form method="post" action="{% url 'edit_wish' wish.id %}">
+              {% csrf_token %}
+              <input type="text" name="wish_text" value="{{ wish.text }}">
+              <button type="sumbit">Сохранить</button>
+              <a href="{% url 'wishlist' %}" class="cancel-btn">Отмена</a>
+            </form>
+          {% else %}
+            {{ wish.text }} 
+            <span class="date">
+              {% if wish.edited_at %}
+                (отредактировано: {{ wish.edited_at }})
+               {% else %}
+                (добавлено: {{ wish.created_at }})
+               {% endif %}
+              </span>
+              <a href="{% url 'wishlist' %}?edit={{ wish.id }}" class="edit-btn">Ред.</a>
+            <form method="post" action="{% url 'delete_wish' wish.id %}">
+              {% csrf_token %}
+              <button type="sumbit" class="delete-btn">Удалить</button>
+            </form>
+          {% endif %}
+
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </body>
+</html>
